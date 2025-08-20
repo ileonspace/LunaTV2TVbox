@@ -10,4 +10,4 @@ LunaTV 2 TVBox API ，用于将 LunaTV接口转换为TVBox 和影视仓兼容的
 - **开源免费**：基于 MIT 许可证，自由使用和修改。
 
 
-- **⭐如果您觉得本项目有用，请给个 Star！  感谢使用 LunaTV 2 TVBox API.**
+- **⭐ 如果您觉得本项目有用，请给个 Star！  感谢使用 LunaTV 2 TVBox API.**
