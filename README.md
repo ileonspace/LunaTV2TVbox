@@ -1,4 +1,4 @@
-LunaTV2TVBox-API ，用于将 LunaTV接口转换为TVBox 和影视仓兼容的API接口，支持自定义分类编辑，适用于Android TV、TVBox 等设备，提供便捷的IPTV和流媒体内容管理。
+LunaTV 2 TVBox API ，用于将 LunaTV接口转换为TVBox 和影视仓兼容的API接口，支持自定义分类编辑，适用于Android TV、TVBox 等设备，提供便捷的IPTV和流媒体内容管理。
 
 ## 功能特性
 
@@ -10,6 +10,4 @@ LunaTV2TVBox-API ，用于将 LunaTV接口转换为TVBox 和影视仓兼容的AP
 - **开源免费**：基于 MIT 许可证，自由使用和修改。
 
 
-- **⭐如果您觉得本项目有用，请给个 Star！  感谢使用 LunaTV2 TVBox API.**
-
-                
+- **⭐如果您觉得本项目有用，请给个 Star！  感谢使用 LunaTV 2 TVBox API.**
