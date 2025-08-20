@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunatv到影视仓接口转换器</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 用于删除图标 -->
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/all.min.css" rel="stylesheet">
+    <!-- 自定义 CSS -->
+    <style>
+        body {
+            background: linear-gradient(135deg, #d1d5db, #e5e7eb);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+        .container {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            padding: 15px;
+            max-width: 700px;
+            width: 90%;
+            margin: 10px;
+        }
+        .dark-mode .container {
+            background: #1f2937;
+            color: #d1d5db;
+        }
+        .dark-mode body {
+            background: linear-gradient(135deg, #374151, #4b5563);
+        }
+        h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+        @media (max-width: 576px) {
+            h1 {
+                font-size: 1.4rem;
+            }
+        }
+        .dark-mode h1 {
+            color: #e5e7eb;
+        }
+        .form-label, .category-label {
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        textarea, #output {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            padding: 8px;
+            color: #1f2937;
+        }
+        textarea::placeholder {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            color: #6b7280;
+        }
+        .dark-mode textarea, .dark-mode #output {
+            background: #374151;
+            color: #d1d5db;
+            border-color: #4b5563;
+        }
+        .dark-mode textarea::placeholder {
+            color: #9ca3af;
+            font-size: 0.95rem;
+        }
+        textarea {
+            height: 120px;
+            resize: none;
+            width: 100%;
+        }
+        #output {
+            background: #f9fafb;
+            max-height: 200px;
+            overflow-y: auto;
+            width: 100%;
+        }
+        .btn {
+            border-radius: 8px;
+            padding: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+            color: #f3f4f6;
+            transition: all 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-convert, .btn-copy, .btn-download, .btn-add-category {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-color: #3b82f6;
+        }
+        .btn-reset-categories, .btn-clear-output, .btn-clear-categories {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            border-color: #ef4444;
+        }
+        .btn-theme-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-color: #3b82f6;
+            color: #f3f4f6;
+        }
+        .category-tags {
+            margin-bottom: 10px;
+        }
+        .category-tags .badge {
+            font-size: 1rem;
+            margin: 3px;
+            padding: 5px 8px;
+            background: #3b82f6;
+            cursor: move;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            user-select: none;
+        }
+        @media (max-width: 576px) {
+            .category-tags .badge {
+                font-size: 1.0rem !important;
+                padding: 4px 6px;
+            }
+        }
+        .dark-mode .category-tags .badge {
+            background: #4b5563;
+        }
+        .category-tags .badge i {
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .category-tags .badge.dragging {
+            opacity: 0.5;
+        }
+        .category-section {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        @media (max-width: 576px) {
+            .category-section {
+                flex-direction: column;
+            }
+        }
+        .category-input {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .category-input input {
+            font-size: 0.95rem;
+            width: 50%;
+        }
+        @media (max-width: 576px) {
+            .category-input input {
+                width: 100%;
+            }
+            .category-input {
+                flex-direction: column;
+            }
+            .category-input .btn-add-category {
+                width: 100%;
+            }
+        }
+        .category-buttons {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+        .category-buttons .btn {
+            flex: 1;
+            min-width: 100px;
+            text-align: center;
+        }
+        @media (max-width: 576px) {
+            .category-buttons {
+                flex-direction: row;
+                flex-wrap: nowrap;
+            }
+            .category-buttons .btn {
+                flex: 1;
+                min-width: 0;
+                font-size: 0.8rem;
+                padding: 6px 8px;
+            }
+        }
+        .button-group {
+            display: flex;
+            gap: 8px;
+            align-items: center; /* 垂直居中对齐 */
+            flex-wrap: nowrap; /* 确保按钮在同一行 */
+        }
+        .button-group .btn {
+            flex: 1; /* 按钮平分宽度 */
+            min-width: 100px; /* 最小宽度，防止按钮过窄 */
+            text-align: center; /* 文本居中 */
+        }
+        @media (max-width: 576px) {
+            .button-group {
+                flex-direction: row; /* 移动端保持水平排列 */
+                flex-wrap: nowrap; /* 防止换行 */
+            }
+            .button-group .btn {
+                flex: 1; /* 平分宽度 */
+                min-width: 0; /* 允许按钮在小屏幕上缩小 */
+                font-size: 0.8rem; /* 移动端稍小字体 */
+                padding: 6px 8px; /* 调整移动端内边距 */
+            }
+        }
+        .clear-output-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        @media (max-width: 576px) {
+            .clear-output-group {
+                flex-direction: row;
+            }
+            .clear-output-group .btn {
+                flex: 1;
+                min-width: 0;
+            }
+        }
+        .alert {
+            font-size: 0.75rem;
+            margin-top: 8px;
+            padding: 6px;
+            border-radius: 6px;
+            transition: opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <button class="btn btn-theme-toggle" onclick="toggleTheme()">🌙</button>
+    <div class="container">
+        <h1>Lunatv到影视仓接口转换器</h1>
+        
+        <!-- 分类管理 -->
+        <div class="mb-3 category-section">
+            <div class="col-md-6 col-12">
+                <label class="category-label">当前分类（轻按拖动即可）</label>
+                <div class="category-tags" id="categoryTags"></div>
+            </div>
+            <div class="col-md-6 col-12">
+                <label class="category-label">添加新分类</label>
+                <div class="category-input">
+                    <input type="text" id="newCategory" class="form-control" placeholder="输入新分类名称">
+                    <button class="btn btn-add-category" onclick="addCategory()">添加</button>
+                </div>
+                <div class="category-buttons mt-2">
+                    <button class="btn btn-reset-categories" onclick="resetCategories()">重置分类</button>
+                    <button class="btn btn-clear-categories" onclick="clearCategories()">清除分类</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 输入 JSON -->
+        <div class="mb-3">
+            <label for="inputJson" class="form-label">请输入Lunatv接口Json</label>
+            <textarea id="inputJson" class="form-control" placeholder="粘贴Lunatv config.json 内容"></textarea>
+        </div>
+        <button class="btn btn-convert" onclick="convertJson()">转换</button>
+
+        <!-- 输出结果 -->
+        <div class="mb-3 mt-3">
+            <label for="output" class="form-label">转换后的影视仓接口Json</label>
+            <div id="output" class="form-control"></div>
+        </div>
+        <div class="button-group">
+            <button class="btn btn-copy" onclick="copyOutput()">复制结果</button>
+            <button class="btn btn-download" onclick="downloadOutput()">下载 Json 文件</button>
+        </div>
+        <div class="clear-output-group">
+            <button class="btn btn-clear-output" onclick="clearOutput()">清除输出</button>
+        </div>
+        <div id="alert" class="alert" role="alert" style="display: none;"></div>
+    </div>
+
+    <!-- Bootstrap JS 和 Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 默认分类
+        let categories = ["国产剧", "动作片", "喜剧片", "科幻片", "爱情片", "纪录片", "动画片", "欧美剧", "香港剧", "短剧"];
+        let draggedCategory = null;
+
+        // 初始化分类标签
+        function renderCategories() {
+            const categoryTags = document.getElementById('categoryTags');
+            categoryTags.innerHTML = '';
+            categories.forEach(category => {
+                const badge = document.createElement('span');
+                badge.className = 'badge';
+                badge.draggable = true;
+                badge.innerHTML = `${category} <i class="fas fa-times"></i>`;
+                
+                // 鼠标拖拽事件
+                badge.ondragstart = (e) => {
+                    draggedCategory = category;
+                    badge.classList.add('dragging');
+                    e.dataTransfer.setData('text/plain', category);
+                };
+                badge.ondragend = () => {
+                    badge.classList.remove('dragging');
+                    draggedCategory = null;
+                };
+                badge.ondragover = (e) => e.preventDefault();
+                badge.ondrop = (e) => {
+                    e.preventDefault();
+                    const targetCategory = category;
+                    const draggedIndex = categories.indexOf(draggedCategory);
+                    const targetIndex = categories.indexOf(targetCategory);
+                    if (draggedIndex !== -1 && targetIndex !== -1 && draggedIndex !== targetIndex) {
+                        categories.splice(draggedIndex, 1);
+                        categories.splice(targetIndex, 0, draggedCategory);
+                        renderCategories();
+                    }
+                };
+
+                // 触摸拖拽事件
+                badge.ontouchstart = (e) => {
+                    draggedCategory = category;
+                    badge.classList.add('dragging');
+                };
+                badge.ontouchmove = (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+                    if (target && target.classList.contains('badge') && target !== badge) {
+                        const targetCategory = target.textContent.split(' ')[0];
+                        const draggedIndex = categories.indexOf(draggedCategory);
+                        const targetIndex = categories.indexOf(targetCategory);
+                        if (draggedIndex !== -1 && targetIndex !== -1 && draggedIndex !== targetIndex) {
+                            categories.splice(draggedIndex, 1);
+                            categories.splice(targetIndex, 0, draggedCategory);
+                            renderCategories();
+                        }
+                    }
+                };
+                badge.ontouchend = () => {
+                    badge.classList.remove('dragging');
+                    draggedCategory = null;
+                };
+
+                // 删除事件
+                badge.querySelector('i').onclick = (e) => {
+                    e.stopPropagation();
+                    if (confirm(`确认删除分类 "${category}" 吗？`)) {
+                        removeCategory(category);
+                    }
+                };
+                categoryTags.appendChild(badge);
+            });
+        }
+
+        // 添加分类
+        function addCategory() {
+            const newCategoryInput = document.getElementById('newCategory');
+            const newCategory = newCategoryInput.value.trim();
+            if (newCategory && !categories.includes(newCategory)) {
+                categories.push(newCategory);
+                renderCategories();
+                newCategoryInput.value = '';
+                showAlert('分类添加成功！', 'alert-success');
+            } else {
+                showAlert('分类已存在或输入为空！', 'alert-warning');
+            }
+        }
+
+        // 删除分类
+        function removeCategory(category) {
+            categories = categories.filter(c => c !== category);
+            renderCategories();
+            showAlert('分类删除成功！', 'alert-success');
+        }
+
+        // 重置分类
+        function resetCategories() {
+            categories = ["国产剧", "动作片", "喜剧片", "科幻片", "爱情片", "纪录片", "动画片", "欧美剧", "香港剧", "短剧"];
+            renderCategories();
+            showAlert('分类已重置！', 'alert-success');
+        }
+
+        // 清除分类
+        function clearCategories() {
+            categories = [];
+            renderCategories();
+            showAlert('分类已清除！', 'alert-success');
+        }
+
+        // JSON 转换
+        function convertJson() {
+            const input = document.getElementById('inputJson').value;
+            const outputDiv = document.getElementById('output');
+            const alertDiv = document.getElementById('alert');
+
+            try {
+                const inputJson = JSON.parse(input);
+                const apiSite = inputJson.api_site || {};
+                const sites = Object.keys(apiSite).map(key => ({
+                    key: key,
+                    name: apiSite[key].name,
+                    type: 1,
+                    api: apiSite[key].api + (apiSite[key].api.includes('?') ? '&ac=list' : '/?ac=list'),
+                    searchable: 1,
+                    quickSearch: 1,
+                    filterable: 1,
+                    categories: categories
+                }));
+                const outputJson = { sites };
+                outputDiv.textContent = JSON.stringify(outputJson, null, 2);
+                alertDiv.style.display = 'none';
+            } catch (e) {
+                alertDiv.className = 'alert alert-danger';
+                alertDiv.textContent = 'JSON 格式错误，请检查输入！';
+                alertDiv.style.display = 'block';
+                outputDiv.textContent = '';
+            }
+        }
+
+        // 复制结果
+        function copyOutput() {
+            const output = document.getElementById('output').textContent;
+            if (output) {
+                navigator.clipboard.writeText(output).then(() => {
+                    showAlert('复制成功！', 'alert-success');
+                });
+            }
+        }
+
+        // 下载 JSON
+        function downloadOutput() {
+            const output = document.getElementById('output').textContent;
+            if (output) {
+                const blob = new Blob([output], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'leontv_config.json';
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        // 清除输出
+        function clearOutput() {
+            const outputDiv = document.getElementById('output');
+            outputDiv.textContent = '';
+            showAlert('输出已清除！', 'alert-success');
+        }
+
+        // 显示提示
+        function showAlert(message, className) {
+            const alertDiv = document.getElementById('alert');
+            alertDiv.className = `alert ${className}`;
+            alertDiv.textContent = message;
+            alertDiv.style.display = 'block';
+            setTimeout(() => { alertDiv.style.display = 'none'; }, 2000);
+        }
+
+        // 切换主题
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const btn = document.querySelector('.btn-theme-toggle');
+            btn.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        }
+
+        // 初始化页面
+        renderCategories();
+    </script>
+</body>
+</html>
