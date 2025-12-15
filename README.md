@@ -1,4 +1,4 @@
-README.md 源码与预览对照表这份文档是为了展示 README.md 的 Markdown 源码 (Code) 与 渲染效果 (Render) 的对比，方便您查看排版语法与实际效果的关系。1. 标题与引言 (Title & Intro)📝 源码 (Source Code)# 🌌 Lunatv / TvBox Interface Converter (iOS 26 Edition)
+1. 标题与引言 (Title & Intro)📝 源码 (Source Code)# 🌌 Lunatv / TvBox Interface Converter (iOS 26 Edition)
 
 > 一个极具未来感、流畅且强大的影视接口配置转换工具。
 > 
