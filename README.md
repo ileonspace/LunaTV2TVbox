@@ -1,8 +1,8 @@
-# 🌌 Lunatv / TvBox Interface Converter (iOS 26 Edition)
+# 🌌 Lunatv / TvBox Interface Converter
 
 > 一个极具未来感、流畅且强大的影视接口配置转换工具。
 > 
-> **设计理念**：iOS 26 概念设计 | 极光玻璃拟态 | 物理级丝滑交互
+> **设计理念**：概念设计 | 极光玻璃拟态 | 物理级丝滑交互
 
 ## 1. 项目简介 (Introduction)
 
@@ -48,7 +48,7 @@
 
 ## 4. 如何使用 (Usage)
 
-1. **下载**：下载本项目中的 `Lunatv2Tvbox_iOS26.html` 文件。
+1. **下载**：下载本项目中的 `Lunatv2Tvbox.html` 文件。
 2. **运行**：直接使用 Chrome, Edge, Safari 或任意现代浏览器打开该文件。
 3. **操作**：
    - 点击顶部的胶囊开关切换转换模式。
